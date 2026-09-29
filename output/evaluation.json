@@ -1,0 +1,12 @@
+{
+  "method": "deterministic_static_prompt_heuristic",
+  "weights": {
+    "task_clarity": 0.25,
+    "context": 0.2,
+    "constraints": 0.2,
+    "output_format": 0.2,
+    "examples": 0.15
+  },
+  "status": "reproducible fixture",
+  "note": "Regenerate with python -m src.evaluate; this file is an example artifact, not model-quality evidence."
+}
