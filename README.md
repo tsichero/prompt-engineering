@@ -1,8 +1,8 @@
-# Prompt Engineering Lab — Systematic Prompt Evaluation
+# Prompt Engineering — Systematic Prompt Evaluation
 
 > **Portfolio project · Prompt Engineering · Generative AI · Evaluation**
 
-Laboratório prático para demonstrar **Engenharia de Prompt como processo técnico**, indo além de uma coleção de prompts.
+Projeto de Engenharia de Prompt que demonstra **um processo técnico e reproduzível**, indo além de uma coleção de prompts.
 
 O projeto organiza experimentos de **hipótese → prompt → execução → avaliação → comparação → melhoria**, com foco em qualidade, consistência, formato de saída, grounding e análise de falhas.
 
@@ -10,7 +10,7 @@ O projeto organiza experimentos de **hipótese → prompt → execução → ava
 
 Investigar como diferentes estratégias de prompting alteram o comportamento de um modelo e documentar os resultados de forma reproduzível.
 
-O laboratório trata prompts como **artefatos de engenharia versionáveis**, conectando cada alteração a uma hipótese e a critérios de avaliação.
+O projeto trata prompts como **artefatos de engenharia versionáveis**, conectando cada alteração a uma hipótese e a critérios de avaliação.
 
 ## 🔬 O que já está implementado
 
@@ -119,7 +119,7 @@ Uma resposta gerada não é automaticamente uma resposta de qualidade. O fluxo s
 
 ### Reprodutibilidade antes de benchmark
 
-A primeira implementação evita dependência de uma API externa. Isso permite testar o pipeline de avaliação de forma determinística antes de adicionar modelos reais.
+A implementação atual evita dependência de uma API externa. Isso permite testar o pipeline de avaliação de forma determinística antes de adicionar modelos reais.
 
 ## 🔐 Limitações atuais
 
