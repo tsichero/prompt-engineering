@@ -1,4 +1,4 @@
-name: Prompt Engineering Lab CI
+name: Prompt Engineering CI
 
 on:
   push:
