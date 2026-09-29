@@ -1,0 +1,44 @@
+[
+  {
+    "id": "summarization",
+    "task": "Summarize a technical paragraph",
+    "variants": [
+      {
+        "name": "baseline",
+        "prompt": "Summarize the text."
+      },
+      {
+        "name": "structured",
+        "prompt": "Summarize the text. Context: technical document. You must use at most 5 bullet points. Format: bullet list. Do not invent facts. Example: input and output."
+      }
+    ]
+  },
+  {
+    "id": "extraction",
+    "task": "Extract structured information",
+    "variants": [
+      {
+        "name": "baseline",
+        "prompt": "Extract the important information from the document."
+      },
+      {
+        "name": "structured",
+        "prompt": "Extract the requested fields. Context: document. You must return JSON with the required fields. Do not add unsupported values. Format: JSON schema. Example: input and output."
+      }
+    ]
+  },
+  {
+    "id": "classification",
+    "task": "Classify a support request",
+    "variants": [
+      {
+        "name": "baseline",
+        "prompt": "Classify this request."
+      },
+      {
+        "name": "structured",
+        "prompt": "Classify this request. Context: customer support message. You must choose only one allowed category. Do not invent categories. Format: JSON with category and reason. Example: input and output."
+      }
+    ]
+  }
+]
