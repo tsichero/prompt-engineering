@@ -12,28 +12,25 @@ Investigar como diferentes estratégias de prompting alteram o comportamento de 
 
 O laboratório trata prompts como **artefatos de engenharia versionáveis**, conectando cada alteração a uma hipótese e a critérios de avaliação.
 
-## 🔬 Estratégias estudadas
+## 🔬 O que já está implementado
 
-- Zero-shot prompting
-- Few-shot prompting
-- Role prompting
-- Contextual prompting
-- Structured output
-- Prompt chaining
-- RAG-oriented prompting
-- Grounded generation
-- Instruções de restrição
-- Guardrails e validação de saída
-- Comparação entre versões de prompt
-- Análise de casos de falha
+- casos de experimento versionados em JSON;
+- baseline vs. prompt estruturado;
+- avaliador determinístico de sinais de qualidade estrutural;
+- pesos explícitos por critério;
+- testes automatizados de reprodutibilidade;
+- geração de artefato JSON;
+- GitHub Actions para testes e geração da avaliação.
+
+> **Importante:** o avaliador atual é uma heurística estrutural. Ele **não mede qualidade semântica de uma resposta de LLM** e não deve ser apresentado como benchmark de modelo.
 
 ## 🧪 Método experimental
 
-Cada experimento segue, sempre que aplicável:
+Cada experimento segue:
 
 **Problema → baseline → hipótese → prompt → execução → avaliação → análise → iteração**
 
-Os experimentos devem registrar:
+Os experimentos registram:
 
 1. problema;
 2. hipótese;
@@ -45,49 +42,40 @@ Os experimentos devem registrar:
 8. falhas e limitações;
 9. próxima iteração.
 
-## 📊 Critérios de avaliação
+## 📊 Critérios atuais
 
-| Critério | O que é observado |
-|---|---|
-| Aderência | Cumprimento das instruções |
-| Relevância | Relação com o objetivo da tarefa |
-| Precisão | Correção em relação às evidências disponíveis |
-| Completude | Cobertura do que foi solicitado |
-| Consistência | Estabilidade do comportamento |
-| Estrutura | Conformidade com o formato esperado |
-| Grounding | Fundamentação no contexto fornecido |
-| Robustez | Comportamento diante de entradas diferentes |
-| Falhas | Respostas inadequadas ou não fundamentadas |
+| Critério | Peso |
+|---|---:|
+| Clareza da tarefa | 25% |
+| Contexto | 20% |
+| Restrições | 20% |
+| Formato de saída | 20% |
+| Exemplos | 15% |
 
-> **Importante:** métricas e resultados só devem ser apresentados como evidência experimental quando tiverem sido realmente executados e registrados.
+A próxima camada de avaliação deve adicionar métricas de **aderência, relevância, precisão, completude, consistência, grounding e robustez** sobre respostas efetivamente geradas.
 
-## 🏗️ Arquitetura conceitual
+## 🏗️ Arquitetura
 
 ```text
-Entrada
-   │
-   ▼
-Prompt Template
-   │
-   ├── Instruções
-   ├── Contexto
-   └── Exemplos
-   │
-   ▼
-LLM / Model
-   │
-   ▼
-Resposta estruturada
-   │
-   ▼
-Validação
-   │
-   ▼
-Avaliação
-   ├── Qualidade
-   ├── Relevância
-   ├── Grounding
-   └── Casos de falha
+Casos de teste
+     │
+     ▼
+Baseline / Prompt estruturado
+     │
+     ▼
+Avaliador determinístico
+     │
+     ├── Clareza
+     ├── Contexto
+     ├── Restrições
+     ├── Formato
+     └── Exemplos
+     │
+     ▼
+Resultado versionado
+     │
+     ▼
+Testes + CI
 ```
 
 ## 📁 Estrutura
@@ -95,20 +83,27 @@ Avaliação
 ```text
 prompt-engineering-lab/
 ├── README.md
-├── prompts/
-│   ├── baseline/
-│   ├── few-shot/
-│   ├── structured/
-│   └── rag/
+├── src/
+│   └── evaluate.py
 ├── experiments/
-├── datasets/
-├── evaluations/
-├── outputs/
+│   └── cases.json
+├── output/
+│   ├── evaluation.json
+│   └── README.md
 ├── tests/
+│   └── test_evaluate.py
+├── .github/workflows/
+│   └── ci.yml
 └── requirements.txt
 ```
 
-A estrutura será expandida conforme os experimentos forem implementados.
+## ▶️ Como executar
+
+```bash
+pip install -r requirements.txt
+python -m pytest -q
+python -m src.evaluate
+```
 
 ## 🧠 Decisões de engenharia
 
@@ -118,47 +113,43 @@ Prompts relevantes devem ser versionados para permitir comparação entre altera
 
 ### Geração ≠ avaliação
 
-Uma resposta gerada não é automaticamente uma resposta de qualidade. Por isso, o fluxo separa:
+Uma resposta gerada não é automaticamente uma resposta de qualidade. O fluxo separa:
 
 **geração → validação → avaliação**.
 
-### Casos de falha também são evidências
+### Reprodutibilidade antes de benchmark
 
-O laboratório registra comportamentos inadequados para identificar limites, regressões e oportunidades de melhoria.
+A primeira implementação evita dependência de uma API externa. Isso permite testar o pipeline de avaliação de forma determinística antes de adicionar modelos reais.
 
-## 🛠️ Tecnologias
+## 🔐 Limitações atuais
 
-**Python · LLMs · Generative AI · Prompt Engineering · Evaluation · Structured Outputs · RAG · JSON · Automated Testing**
-
-## 🔐 Limitações
-
-Os resultados de prompting podem variar conforme:
-
-- modelo e versão;
-- parâmetros de geração;
-- dataset;
-- contexto;
-- idioma;
-- critérios de avaliação;
-- complexidade da tarefa.
-
-Este projeto não pretende afirmar que uma estratégia é universalmente superior. A proposta é comparar comportamentos sob condições documentadas.
+- não há chamada a LLM externa;
+- não há medição de qualidade semântica;
+- a heurística depende de sinais textuais explícitos;
+- não compara modelos;
+- os resultados estruturais não representam qualidade final da resposta.
 
 ## 🚀 Roadmap
 
-- [ ] adicionar conjunto de casos de teste;
-- [ ] versionar prompts;
-- [ ] implementar experimentos reproduzíveis;
-- [ ] automatizar avaliações;
-- [ ] comparar modelos;
-- [ ] incluir métricas quantitativas;
-- [ ] integrar APIs de LLM;
-- [ ] adicionar testes de regressão de prompts;
-- [ ] integrar CI.
+- [x] casos de teste versionados;
+- [x] avaliação estrutural determinística;
+- [x] testes automatizados;
+- [x] CI;
+- [ ] versionar prompts por estratégia;
+- [ ] integrar um modelo real;
+- [ ] criar dataset fixo de avaliação;
+- [ ] avaliar respostas com métricas semânticas;
+- [ ] adicionar avaliação por LLM-as-judge com protocolo documentado;
+- [ ] testes de regressão de prompts;
+- [ ] comparar modelos e custos/latência.
+
+## 🛠️ Tecnologias
+
+**Python · Prompt Engineering · Generative AI · LLM Evaluation · JSON · Pytest · GitHub Actions**
 
 ## 💼 Competências demonstradas
 
-**Prompt Engineering · Generative AI · LLM Applications · Evaluation · Experiment Design · Structured Outputs · RAG Prompting · Python · Testing · Technical Documentation**
+**Prompt Engineering · Experiment Design · Evaluation · Reproducibility · Automated Testing · Technical Documentation · Generative AI**
 
 ## 🔗 Portfólio
 
@@ -166,9 +157,7 @@ Este projeto não pretende afirmar que uma estratégia é universalmente superio
 
 ## 📌 Status
 
-**Em desenvolvimento.**
-
-Este README documenta a metodologia e a arquitetura do laboratório. Resultados experimentais serão adicionados conforme forem efetivamente implementados e validados.
+**Fundação implementada e preparada para a próxima etapa de avaliação com modelo real.**
 
 ---
 
